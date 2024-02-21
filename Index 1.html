@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-codespace</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>    
+    <div class="overlay" id="popupOverlay">
+        <div class="popup">
+            <!-- <a id="closePopup" class="close">&times;</a> -->
+            <form id="createBranchForm">
+                <p>Please select one option:</p>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="option" value="option1"> Create a new branch
+                    </label>
+                    <label>
+                        <input type="radio" name="option" value="option2"> Go to Existing
+                    </label>
+                </div>
+                <input id="branchNameInput" name="branchName" placeholder="Enter branch name (case sensitive)" type="text" />
+                <input id="filePath" name="filePath" placeholder="Enter the file path" type="text" />
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script src="index.js"></script>
+</html>
