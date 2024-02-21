@@ -31,7 +31,8 @@ jobs:
       - name: Update Devcontainer JSON
         run: |
           dynamicFilePath=${{ github.event.inputs.dynamic_path }}
-          sed -i 's|openFiles": \[|openFiles": \[\n    "'"$dynamicFilePath"'"|' .devcontainer/devcontainer.json
+          echo $dynamicFilePath
+          sed -i 's|openFiles": \[|openFiles": \[\n"'"$dynamicFilePath"'"|' .devcontainer/devcontainer.json
 
       - name: Pull Latest Changes from Main Branch
         run: |
