@@ -1,9 +1,6 @@
 name: Create Codespace and Update Repository
 
 on:
-  push:
-    branches:
-      "*"
   workflow_dispatch:
     inputs:
       dynamic_path:
