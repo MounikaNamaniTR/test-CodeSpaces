@@ -51,8 +51,8 @@ jobs:
       - name: Create Codespace
         id: create_codespace
         run: |
-          REPO_OWNER="Mohit-TekwaniTR"
-          REPO_NAME="mohit-test"
+          REPO_OWNER="MounikaNamaniTR"
+          REPO_NAME="test-CodeSpaces"
           GITHUB_TOKEN="${{ secrets.MY_PAT_TOKEN }}"
           BRANCH_NAME="${{ github.event.inputs.branch_name }}"
           response=$(curl -v \
