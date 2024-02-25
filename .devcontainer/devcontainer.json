@@ -1,15 +1,8 @@
 {
-    "name": "Dev Container",
-    "postCreateCommand": "wsl /bin/bash .devcontainer/setuptasks.sh",
-    "settings": {
-        "terminal.integrated.shell.linux": "/bin/bash"
-    },
     "customizations": {
         "codespaces": {
             "openFiles": [
-    ""
-    ""
-              
+                
             ]
         }
     }
