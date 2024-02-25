@@ -6,7 +6,10 @@ on:
       dynamic_path:
         description: 'Enter the dynamic path'
         required: true
-        default: 'example_path'
+      branch_name:
+        description: 'Enter the branch name'
+        required: true
+        default: 'main'
 
 jobs:
   create-codespace:
@@ -21,7 +24,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: '14'
+
+      - name: Install jq
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install jq -y
+
+      - name: Install jq
+        if: runner.os == 'macOS'
+        run: brew install jq
 
       - name: Install Dependencies
         run: npm install
@@ -32,7 +43,8 @@ jobs:
         run: |
           dynamicFilePath=${{ github.event.inputs.dynamic_path }}
           echo $dynamicFilePath
-          sed -i 's|openFiles": \[|openFiles": \[\n"'"$dynamicFilePath"'"|' .devcontainer/devcontainer.json
+          sed -i "s|\(\"openFiles\": \[\)|\1\"$dynamicFilePath\"|" .devcontainer/devcontainer.json
+          echo $(sed -i "s/\(\"openFiles\": \[\)/\1\"$dynamicFilePath\", /" .devcontainer/devcontainer.json)
 
       - name: Pull Latest Changes from Main Branch
         run: |
@@ -41,10 +53,15 @@ jobs:
 
       - name: Create New Branch and Push Changes
         run: |
-          git checkout ${{ github.event.inputs.branch_name }}
-          git add .
-          git commit -m "Update devcontainer.json"
-          git push -u origin ${{ github.event.inputs.branch_name }} -f
+           git checkout ${{ github.event.inputs.branch_name }}
+           git add .
+           git status
+           if [ -n "$(git status --porcelain)" ]; then
+              git commit -m "Update devcontainer.json"
+              git push -u origin ${{ github.event.inputs.branch_name }} -f
+           else
+              echo "No changes to commit."
+           fi
 
       - name: Create Codespace
         id: create_codespace
@@ -53,6 +70,7 @@ jobs:
           REPO_NAME="test-CodeSpaces"
           GITHUB_TOKEN="${{ secrets.MY_PAT_TOKEN }}"
           BRANCH_NAME="${{ github.event.inputs.branch_name }}"
+          echo : $BRANCH_NAME
           response=$(curl -v \
             -X POST \
             -H "Accept: application/vnd.github.v3+json" \
@@ -76,10 +94,10 @@ jobs:
       - name: Create Pull Request
         if: steps.create_codespace.outputs.codespace_url != '' && steps.create_codespace.outputs.codespace_url != null
         run: |
-            # Get the current branch name
-            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-            curl -X POST \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -d "{\"title\":\"Update devcontainer.json\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}" \
-              "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls"
+          # Get the current branch name
+          BRANCH_NAME=${{ github.event.inputs.branch_name }}
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -d "{\"title\":\"Update devcontainer.json\",\"head\":\"$BRANCH_NAME\",\"base\":\"main\"}" \
+            "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls"
