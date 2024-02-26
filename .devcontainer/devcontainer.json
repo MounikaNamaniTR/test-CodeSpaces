@@ -1,9 +1,7 @@
 {
     "customizations": {
         "codespaces": {
-            "openFiles": [
-                
-            ]
+            "openFiles": []
         }
     }
 }
