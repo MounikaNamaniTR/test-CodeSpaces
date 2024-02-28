@@ -79,6 +79,7 @@ jobs:
             "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/codespaces")
           CODESPACE_URL=$(echo "$response" | jq -r '.web_url')
           echo "Codespace created: $CODESPACE_URL"
+          echo "response : $response"
           echo '{"codespace_url": "'"$CODESPACE_URL"'"}' > output.json
           echo "::set-output name=codespace_url::$CODESPACE_URL"
 
